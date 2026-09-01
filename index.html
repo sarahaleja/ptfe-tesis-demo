@@ -1,0 +1,1042 @@
+<title>Frentes Térmicos PTFE</title>
+<style>
+  /* ---------- Tokens — panel de control oscuro, acentos institucionales Unicauca ---------- */
+  :root{
+    --bg:#05070E;
+    --surface:#0C1122;
+    --surface-2:#10162C;
+    --surface-3:#141B36;
+    --ink:#EDEFFB;
+    --muted:#8891B4;
+    --muted-2:#5C6690;
+    --border:#1E2748;
+    --border-bright:#2C3868;
+    --blue:#3D8CFF;
+    --blue-deep:#0051C6;
+    --blue-navy:#001282;
+    --red:#FF5C5C;
+    --red-deep:#AD0000;
+    --blue-tint: rgba(61,140,255,0.10);
+    --red-tint: rgba(255,92,92,0.10);
+    --solid-fill:#232B4E;
+    --shadow: 0 1px 2px rgba(0,0,0,0.5), 0 24px 50px -24px rgba(0,0,0,0.85);
+    --focus: 0 0 0 3px rgba(61,140,255,0.45);
+    color-scheme: dark;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1100px 520px at 12% -8%, rgba(0,81,198,0.16), transparent 60%),
+      radial-gradient(900px 480px at 100% 8%, rgba(173,0,0,0.10), transparent 55%),
+      var(--bg);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-size:15px;
+    line-height:1.6;
+  }
+  h1,h2{
+    font-family:"Chakra Petch", "IBM Plex Sans", sans-serif;
+    text-wrap:balance;
+    margin:0;
+    letter-spacing:0.01em;
+  }
+  .mono{ font-family:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  a{ color:var(--blue); }
+  ::selection{ background:rgba(61,140,255,0.35); }
+
+  /* ---------- HUD frame: corchetes de esquina ---------- */
+  .hud-frame{ position:relative; }
+  .hud-frame .corner{ position:absolute; width:16px; height:16px; pointer-events:none; opacity:0.55; }
+  .hud-frame .corner.tl{ top:-1px; left:-1px; border-top:2px solid var(--blue); border-left:2px solid var(--blue); }
+  .hud-frame .corner.tr{ top:-1px; right:-1px; border-top:2px solid var(--blue); border-right:2px solid var(--blue); }
+  .hud-frame .corner.bl{ bottom:-1px; left:-1px; border-bottom:2px solid var(--red); border-left:2px solid var(--red); }
+  .hud-frame .corner.br{ bottom:-1px; right:-1px; border-bottom:2px solid var(--red); border-right:2px solid var(--red); }
+
+  /* ---------- Layout shells ---------- */
+  .banner{
+    position:relative;
+    padding:2.6rem 1.5rem 2.1rem;
+    border-bottom:1px solid var(--border);
+  }
+  .banner-inner{ max-width:1000px; margin:0 auto; position:relative; }
+  .eyebrow{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.72rem;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--blue);
+    margin-bottom:0.75rem;
+    display:flex;
+    align-items:center;
+    gap:0.55rem;
+  }
+  .eyebrow::before{ content:""; width:7px; height:7px; border-radius:50%; background:var(--red); box-shadow:0 0 8px 1px var(--red); flex:none; }
+  .banner h1{ font-size:clamp(1.8rem, 3.6vw, 2.7rem); font-weight:600; color:#FFFFFF; }
+  .banner p.sub{
+    margin:0.75rem 0 0;
+    max-width:64ch;
+    font-size:1rem;
+    color:var(--muted);
+  }
+  .disclaimer-chip{
+    display:inline-flex;
+    gap:0.55rem;
+    align-items:flex-start;
+    margin-top:1.2rem;
+    padding:0.7rem 0.95rem;
+    background:var(--surface);
+    border:1px solid var(--border-bright);
+    border-left:2px solid var(--blue);
+    border-radius:4px;
+    font-size:0.82rem;
+    color:var(--muted);
+    max-width:68ch;
+  }
+  .disclaimer-chip strong{ color:var(--ink); }
+  .disclaimer-chip svg{ flex:none; margin-top:0.15rem; color:var(--blue); }
+
+  main{ max-width:1000px; margin:0 auto; padding:2.6rem 1.5rem 1rem; }
+
+  section.scene{ margin-bottom:3rem; }
+  .scene-head{ margin-bottom:1.2rem; }
+  .scene-kicker{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--red);
+    margin-bottom:0.5rem;
+    padding-bottom:0.5rem;
+    border-bottom:1px solid var(--border);
+  }
+  .scene-head h2{ font-size:1.55rem; font-weight:600; color:#fff; }
+  .scene-head p{ color:var(--muted); max-width:72ch; margin:0.6rem 0 0; }
+
+  .note{
+    display:flex;
+    gap:0.6rem;
+    align-items:flex-start;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-left:2px solid var(--blue);
+    border-radius:4px;
+    padding:0.8rem 0.95rem;
+    font-size:0.85rem;
+    color:var(--muted);
+    margin-top:0.9rem;
+  }
+  .note.warn{ border-left-color:var(--red); }
+  .note svg{ flex:none; margin-top:0.1rem; color:inherit; }
+  .note strong{ color:var(--ink); }
+
+  /* ---------- Equation cards ---------- */
+  .eq-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1px;
+    margin:1.2rem 0;
+    background:var(--border);
+    border:1px solid var(--border);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  @media (max-width:720px){ .eq-row{ grid-template-columns:1fr; } }
+  .eq-card{
+    background:var(--surface);
+    padding:1rem 1.1rem;
+  }
+  .eq-card .eq-label{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.7rem;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--muted);
+    margin-bottom:0.6rem;
+    display:flex;
+    align-items:center;
+    gap:0.45rem;
+  }
+  .swatch{ width:0.55rem; height:0.55rem; border-radius:50%; display:inline-block; box-shadow:0 0 6px 0 currentColor; }
+  .eq-card .eq-body{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.95rem;
+    color:var(--ink);
+    line-height:1.8;
+  }
+  .eq-card .eq-desc{
+    font-size:0.82rem;
+    color:var(--muted);
+    margin-top:0.6rem;
+  }
+  .chester-box{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:6px;
+    padding:0.9rem 1.05rem;
+    font-size:0.83rem;
+    color:var(--muted);
+    margin:0.9rem 0 0;
+  }
+  .chester-box .mono{ color:var(--blue); }
+
+  /* ---------- Panels ---------- */
+  .panel{
+    background:var(--surface);
+    border:1px solid var(--border-bright);
+    border-radius:8px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .canvas-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+  }
+  @media (max-width:720px){ .canvas-grid{ grid-template-columns:1fr; } }
+  .canvas-cell{
+    padding:0.95rem 0.95rem 0.6rem;
+    border-right:1px solid var(--border);
+  }
+  .canvas-cell:last-child{ border-right:none; }
+  @media (max-width:720px){
+    .canvas-cell{ border-right:none; border-bottom:1px solid var(--border); }
+    .canvas-cell:last-child{ border-bottom:none; }
+  }
+  .canvas-title{
+    display:flex;
+    align-items:center;
+    gap:0.5rem;
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.76rem;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:0.55rem;
+  }
+  .canvas-title b{ color:var(--ink); font-weight:600; }
+  canvas{ width:100%; display:block; background:var(--surface-2); border-radius:4px; border:1px solid var(--border); }
+
+  /* ---------- Stat tiles (lectura tipo instrumento) ---------- */
+  .stat-row{
+    display:flex;
+    flex-wrap:wrap;
+    border-top:1px solid var(--border);
+    background:var(--surface-3);
+  }
+  .stat-tile{
+    flex:1 1 auto;
+    min-width:110px;
+    padding:0.7rem 1.1rem;
+    border-right:1px solid var(--border);
+  }
+  .stat-tile:last-child{ border-right:none; }
+  .stat-tile .stat-label{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.66rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--muted-2);
+    margin-bottom:0.25rem;
+  }
+  .stat-tile .stat-value{
+    font-family:"Chakra Petch", monospace;
+    font-size:1.5rem;
+    font-weight:600;
+    font-variant-numeric:tabular-nums;
+    color:var(--ink);
+  }
+  .stat-tile .stat-value.accent-blue{ color:var(--blue); }
+  .stat-tile .stat-value.accent-red{ color:var(--red); }
+  .stat-tile .stat-unit{ font-size:0.68rem; color:var(--muted); margin-left:0.15rem; }
+
+  .controls{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:1.1rem;
+    padding:0.9rem 1.1rem;
+    border-top:1px solid var(--border);
+    background:var(--surface);
+  }
+  .btn{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.78rem;
+    font-weight:500;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    padding:0.55rem 1rem;
+    border-radius:4px;
+    border:1px solid var(--border-bright);
+    background:var(--surface-3);
+    color:var(--ink);
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:0.4rem;
+  }
+  .btn:hover{ border-color:var(--blue); color:var(--blue); }
+  .btn:focus-visible{ outline:none; box-shadow:var(--focus); }
+  .btn.primary{ background:var(--blue-deep); border-color:var(--blue-deep); color:#fff; }
+  .btn.primary:hover{ filter:brightness(1.15); color:#fff; }
+
+  .field{ display:flex; align-items:center; gap:0.6rem; font-size:0.78rem; color:var(--muted); font-family:"IBM Plex Mono", monospace; text-transform:uppercase; letter-spacing:0.04em; }
+  input[type="range"]{
+    width:150px;
+    accent-color:var(--blue);
+  }
+
+  .legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:1.2rem;
+    padding:0.75rem 1.1rem;
+    font-size:0.78rem;
+    color:var(--muted);
+    font-family:"IBM Plex Mono", monospace;
+    border-top:1px solid var(--border);
+  }
+  .legend .item{ display:flex; align-items:center; gap:0.45rem; }
+  .legend .line{ width:1.1rem; height:0; border-top:2.5px solid; }
+  .legend .dash{ border-top-style:dashed; }
+  .legend .dot{ width:0.6rem; height:0.6rem; border-radius:50%; box-shadow:0 0 6px 0 currentColor; }
+
+  footer{
+    max-width:1000px;
+    margin:1rem auto 3rem;
+    padding:1.8rem 1.5rem 0;
+    border-top:1px solid var(--border);
+    color:var(--muted);
+    font-size:0.78rem;
+  }
+  footer h3{ font-size:0.75rem; color:var(--muted-2); margin-bottom:0.7rem; text-transform:uppercase; letter-spacing:0.12em; font-family:"IBM Plex Mono",monospace; font-weight:500;}
+  footer ol{ margin:0 0 1.2rem; padding-left:1.2rem; }
+  footer li{ margin-bottom:0.45rem; }
+  footer .final-note{ margin-top:1.1rem; padding-top:1.1rem; border-top:1px dashed var(--border); font-family:"IBM Plex Mono", monospace; font-size:0.74rem; letter-spacing:0.01em; }
+</style>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<div class="banner">
+  <div class="banner-inner">
+    <div class="eyebrow">Tesis · Propulsión por ablación láser de PTFE · ASCEND 2026, Pisa</div>
+    <h1>Frentes térmicos: Fourier vs. Cattaneo&#8211;Vernotte</h1>
+    <p class="sub">Dos ecuaciones de conducción de calor, resueltas en vivo cuadro a cuadro, para visualizar por qué un tiempo de relajación térmico finito τ₀ — anclado a la estructura molecular del material, no ajustado a posteriori — cambia cualitativamente cómo se propaga el calor durante un pulso láser.</p>
+    <div class="disclaimer-chip">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>
+      <span><strong>Parámetros normalizados para visualización.</strong> τ₀, longitudes y tiempos aquí son unidades arbitrarias elegidas para que el ojo humano vea la propagación. Las escalas reales del PTFE (τ₀ ~ 10⁻¹¹&#8211;10⁻¹³ s, longitudes de difusión ~ nm) ocurren en picosegundos y nanómetros — no son observables a simple vista.</span>
+    </div>
+  </div>
+</div>
+
+<main>
+
+  <section class="scene" id="scene1">
+    <div class="scene-head">
+      <div class="scene-kicker">Escena 1 &middot; dominio fijo, mismo pulso inicial</div>
+      <h2>¿A qué velocidad "se entera" la red del material de un pulso de calor?</h2>
+      <p>Ambos paneles arrancan del mismo pulso gaussiano de temperatura y se resuelven con el mismo paso de tiempo, para que la comparación sea directa. La fila de puntos sobre cada curva es una red atómica esquemática: color = energía térmica local, y la agitación de cada punto escala con √T (equipartición clásica) — así se ve, sitio a sitio, hasta dónde ha "llegado la noticia" del pulso. A la izquierda, Fourier (parabólica): todo el dominio empieza a vibrar de inmediato. A la derecha, Cattaneo&#8211;Vernotte (hiperbólica): un frente de onda térmica genuino avanza a velocidad finita C<sub>h</sub>; por delante de él, la red sigue exactamente en reposo.</p>
+    </div>
+
+    <div class="eq-row">
+      <div class="eq-card">
+        <div class="eq-label"><span class="swatch" style="background:var(--blue); color:var(--blue)"></span>Fourier (parabólica)</div>
+        <div class="eq-body">q = &minus;λ∇T<br>∂T/∂t = α ∂²T/∂x²</div>
+        <div class="eq-desc">El flujo responde instantáneamente al gradiente. Formalmente implica velocidad de propagación infinita para cualquier perturbación térmica.</div>
+      </div>
+      <div class="eq-card">
+        <div class="eq-label"><span class="swatch" style="background:var(--red); color:var(--red)"></span>Cattaneo&#8211;Vernotte (hiperbólica)</div>
+        <div class="eq-body">q + τ₀ ∂q/∂t = &minus;λ∇T<br>ρc ∂T/∂t = &minus;∂q/∂x</div>
+        <div class="eq-desc">Sistema acoplado de primer orden en (T, q). Se reduce a una ecuación de onda amortiguada con velocidad finita C<sub>h</sub> = √(α/τ₀) (Cattaneo, 1958; Vernotte, 1958).</div>
+      </div>
+    </div>
+
+    <div class="chester-box">
+      Anclaje físico (no simulado aquí, sí en la tesis): Chester (1963) muestra que C<sub>h</sub> = 0.557 · C<sub>s</sub>, la velocidad del sonido del material — de donde <span class="mono">τ₀ = 3α / C<sub>s</sub>²</span>. El deslizador de abajo mueve τ₀ como parámetro libre para explorar su efecto; en la tesis, τ₀ se calcula a partir de C<sub>s</sub> medido, no se ajusta.
+    </div>
+
+    <div class="panel hud-frame">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <div class="canvas-grid">
+        <div class="canvas-cell">
+          <div class="canvas-title"><span class="swatch" style="background:var(--blue); color:var(--blue)"></span><b>Fourier</b>&nbsp;— T(x,t), red atómica</div>
+          <canvas id="cvFourier" width="800" height="340" role="img" aria-label="Perfil de temperatura y red atomica, modelo de Fourier"></canvas>
+        </div>
+        <div class="canvas-cell">
+          <div class="canvas-title"><span class="swatch" style="background:var(--red); color:var(--red)"></span><b>Cattaneo&#8211;Vernotte</b>&nbsp;— T(x,t), red atómica</div>
+          <canvas id="cvHyperbolic" width="800" height="340" role="img" aria-label="Perfil de temperatura y red atomica, modelo de Cattaneo-Vernotte, con frente de onda"></canvas>
+        </div>
+      </div>
+      <div class="legend">
+        <span class="item"><span class="dot" style="background:var(--blue); color:var(--blue)"></span>Sitio de red, color = energía local</span>
+        <span class="item"><span class="line dash" style="border-color:var(--red)"></span>Frente de onda térmica, x = C<sub>h</sub>&middot;t</span>
+        <span class="item"><span class="line" style="border-color:var(--muted); opacity:0.6"></span>Estado inicial (t = 0)</span>
+      </div>
+      <div class="stat-row">
+        <div class="stat-tile">
+          <div class="stat-label">Tiempo t</div>
+          <div class="stat-value" id="s1-t">0.000<span class="stat-unit">u.a.</span></div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-label">τ₀</div>
+          <div class="stat-value accent-blue" id="s1-tauval">0.150<span class="stat-unit">u.a.</span></div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-label">Velocidad C<sub>h</sub></div>
+          <div class="stat-value accent-red" id="s1-ch">2.582<span class="stat-unit">u.a.</span></div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn primary" id="s1-play">Reproducir</button>
+        <button class="btn" id="s1-reset">Reiniciar</button>
+        <div class="field">
+          <label for="s1-tau">τ₀</label>
+          <input type="range" id="s1-tau" min="0.02" max="0.6" step="0.01" value="0.15">
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 21h20L12 2Z"/><path d="M12 9v5"/><path d="M12 17h.01"/></svg>
+      <span><strong>Qué mirar:</strong> en Fourier, los sitios de red en el extremo lejano ya empiezan a agitarse (aunque sea mínimamente) desde el primer cuadro. En Cattaneo&#8211;Vernotte, la red por delante del frente rojo permanece exactamente inmóvil hasta que el frente la alcanza — esa es la diferencia física central, no un artefacto de visualización. Ambos paneles usan el esquema numérico correspondiente resuelto en vivo: diferencias finitas explícitas para Fourier, y para Cattaneo&#8211;Vernotte, el sistema (T, q) reescrito en variables características (invariantes de Riemann que viajan a ±C<sub>h</sub>) con diferencias contra el viento y separación de Strang para la relajación — la elección que sí preserva exactamente la velocidad finita de propagación (un Lax&#8211;Wendroff centrado clásico, probado primero, introducía un precursor numérico espurio por delante del frente real).</span>
+    </div>
+  </section>
+
+  <section class="scene" id="scene2">
+    <div class="scene-head">
+      <div class="scene-kicker">Escena 2 &middot; ilustración esquemática, problema de Stefan</div>
+      <h2>Una frontera que retrocede: fusión y ablación</h2>
+      <p>Cuando el material acumula suficiente energía, cambia de fase, y esa transición ocurre en una interfaz que se mueve: el problema clásico de Stefan. Cada punto es un sitio de la red cristalina: en sólido vibra poco y ordenado; al fundir, la agitación crece y el orden se pierde; al ablacionarse, el sitio se desprende de la red y se aleja — la superficie expuesta retrocede hacia la derecha.</p>
+    </div>
+
+    <div class="note warn">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>
+      <span><strong>Esto es un esquema conceptual, no el método numérico de la tesis.</strong> Para mantener esta demo pública genérica, la frontera móvil aquí se resuelve con el método clásico de capacidad calorífica aparente sobre malla fija (Voller &amp; Swaminathan, 1991) más un umbral simple de vaporización superficial — <em>no</em> con la transformación de coordenadas de frontera fija (front-fixing, ξ/η) de dos capas acopladas que se usa en la tesis. La física ilustrada (Stefan, frontera móvil) es la misma; los coeficientes y el esquema de discretización son deliberadamente distintos.</span>
+    </div>
+
+    <div class="panel hud-frame">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <div class="canvas-cell" style="border-right:none;">
+        <div class="canvas-title"><span class="swatch" style="background:var(--blue); color:var(--blue)"></span><b>Corte transversal</b>&nbsp;— red cristalina vs. profundidad x</div>
+        <canvas id="cvStefan" width="900" height="270" role="img" aria-label="Esquema de fusion y retroceso de la superficie ablacionada, red atomica"></canvas>
+      </div>
+      <div class="legend">
+        <span class="item"><span class="dot" style="background:var(--solid-fill); border:1px solid var(--border-bright)"></span>Sólido cristalino</span>
+        <span class="item"><span class="dot" style="background:var(--blue); color:var(--blue)"></span>Fundido (líquido)</span>
+        <span class="item"><span class="dot" style="background:var(--red); color:var(--red)"></span>Ablacionado / expulsado</span>
+        <span class="item"><span class="line dash" style="border-color:var(--ink); opacity:0.55"></span>T(x) instantánea</span>
+      </div>
+      <div class="stat-row">
+        <div class="stat-tile">
+          <div class="stat-label">Tiempo t</div>
+          <div class="stat-value" id="s2-t">0.00<span class="stat-unit">u.a.</span></div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-label">Retroceso s</div>
+          <div class="stat-value accent-red" id="s2-s">0.000<span class="stat-unit">u.a.</span></div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-label">Frente de fusión θ</div>
+          <div class="stat-value accent-blue" id="s2-theta">0.000<span class="stat-unit">u.a.</span></div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn primary" id="s2-play">Reproducir</button>
+        <button class="btn" id="s2-reset">Reiniciar</button>
+        <div class="field">
+          <label for="s2-flux">Intensidad del pulso</label>
+          <input type="range" id="s2-flux" min="3" max="9" step="0.5" value="6">
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <h3>Referencias</h3>
+  <ol>
+    <li>Cattaneo, C. (1958). Sur une forme de l'équation de la chaleur éliminant le paradoxe d'une propagation instantanée. <em>Comptes Rendus de l'Académie des Sciences</em>, 247, 431&#8211;433.</li>
+    <li>Vernotte, P. (1958). Les paradoxes de la théorie continue de l'équation de la chaleur. <em>Comptes Rendus de l'Académie des Sciences</em>, 246, 3154&#8211;3155.</li>
+    <li>Chester, M. (1963). Second sound in solids. <em>Physical Review</em>, 131(5), 2013&#8211;2015.</li>
+    <li>Landau, H. G. (1950). Heat conduction in a melting solid. <em>Quarterly of Applied Mathematics</em>, 8(1), 81&#8211;94.</li>
+    <li>Voller, V. R., &amp; Swaminathan, C. R. (1991). General source-based method for solidification phase change. <em>Numerical Heat Transfer, Part B</em>, 19(2), 175&#8211;189.</li>
+    <li>LeVeque, R. J. (2002). <em>Finite Volume Methods for Hyperbolic Problems.</em> Cambridge University Press. (Variables características, esquemas contra el viento y separación de operadores de Strang para sistemas hiperbólicos con término de relajación.)</li>
+  </ol>
+  <div class="final-note">PTFE ABLATION WORKBENCH &middot; demo interactiva construida para acompañar el póster de tesis de pregrado en Ingeniería Física, Universidad del Cauca — ASCEND 2026, Pisa. Los esquemas numéricos de esta página se resuelven en el navegador, en tiempo real, sin datos pregrabados.</div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  function cssVar(name){
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+
+  function setupCanvas(canvas){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const cssW = canvas.clientWidth || canvas.width;
+    const cssH = canvas.width ? canvas.height * (cssW/canvas.width) : canvas.height;
+    canvas.style.height = cssH + "px";
+    canvas.width = Math.round(cssW * dpr);
+    canvas.height = Math.round(cssH * dpr);
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    return { ctx, w: cssW, h: cssH };
+  }
+
+  // Mapa termico: negro-azul (frio) -> azul institucional -> purpura -> rojo institucional -> ambar (caliente).
+  // Construido sobre la paleta de Unicauca (azul profundo, azul claro, rojo) con un puente
+  // purpura y un tope ambar, necesarios para que el ojo perciba el rango completo de energia.
+  const THERMAL_STOPS = [
+    [0.00,   6,  9, 20],
+    [0.16,   0, 18,130],
+    [0.42,  61,140,255],
+    [0.62, 150, 70,215],
+    [0.82, 255, 92, 92],
+    [1.00, 255,205,120]
+  ];
+  function thermalColor(v){
+    v = v<0?0:(v>1?1:v);
+    for(let i=0;i<THERMAL_STOPS.length-1;i++){
+      const a = THERMAL_STOPS[i], b = THERMAL_STOPS[i+1];
+      if(v>=a[0] && v<=b[0]){
+        const f = (b[0]-a[0])>0 ? (v-a[0])/(b[0]-a[0]) : 0;
+        const r = Math.round(a[1]+f*(b[1]-a[1]));
+        const g = Math.round(a[2]+f*(b[2]-a[2]));
+        const bch = Math.round(a[3]+f*(b[3]-a[3]));
+        return "rgb("+r+","+g+","+bch+")";
+      }
+    }
+    return "rgb(255,205,120)";
+  }
+
+  // Dibuja una fila de sitios de red atomica: color = energia local (mapa termico),
+  // agitacion (jitter) con amplitud ~ sqrt(energia) (equiparticion clasica: <x^2> ~ kT),
+  // sobre una franja horizontal del canvas. `sample(u)` devuelve v en [0,1] para u en [0,1].
+  function drawLattice(ctx, x0, y0, w, bandH, Natoms, sample, clock, phases){
+    const cy = y0 + bandH/2;
+    for(let a=0;a<Natoms;a++){
+      const u = Natoms>1 ? a/(Natoms-1) : 0;
+      const v = sample(u);
+      const amp = Math.min(bandH*0.34, bandH*0.10 + bandH*0.30*Math.sqrt(Math.max(v,0)));
+      const ph = phases[a];
+      const jx = Math.sin(clock*1.7+ph)*amp*0.35;
+      const jy = Math.cos(clock*2.1+ph*1.6)*amp*0.55;
+      const px = x0 + u*w + jx;
+      const py = cy + jy;
+      const r = 1.6 + 2.6*Math.sqrt(Math.max(v,0));
+      const color = thermalColor(v);
+      ctx.save();
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 3 + 10*v;
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(px, py, r, 0, Math.PI*2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+  function makePhases(n){
+    const arr = new Float64Array(n);
+    for(let i=0;i<n;i++) arr[i] = Math.random()*Math.PI*2;
+    return arr;
+  }
+
+  /* =========================================================
+     ESCENA 1 — Fourier vs Cattaneo-Vernotte, dominio fijo
+     ========================================================= */
+  const S1 = (function(){
+    const N = 100;
+    const L = 1.0;
+    const alpha = 1.0;
+    const dx = L/(N-1);
+    const dtFrame = 0.0009;  // tiempo simulado avanzado por cuadro de animacion (u.a.)
+    const tMax = 1.0;
+
+    // Fourier: paso estable propio (limitado por dx^2), varios sub-pasos por cuadro
+    const dtF = 0.9*0.5*dx*dx/alpha;
+    const nsubF = Math.max(1, Math.ceil(dtFrame/dtF));
+    const dtF_actual = dtFrame/nsubF;
+    const rF = alpha*dtF_actual/(dx*dx);
+
+    let tau0 = 0.15;
+    let Ch = Math.sqrt(alpha/tau0);
+
+    let x = [];
+    for(let i=0;i<N;i++) x.push(i*dx);
+
+    let T_f = new Float64Array(N); // Fourier
+    let T0  = new Float64Array(N); // condicion inicial (para dibujar referencia)
+    let T_c = new Float64Array(N); // CV: temperatura
+    let q_c = new Float64Array(N); // CV: flujo de calor
+    let Rp = new Float64Array(N), Rm = new Float64Array(N);
+    let RpN = new Float64Array(N), RmN = new Float64Array(N);
+    let tmpT = new Float64Array(N);
+
+    let t = 0;
+    let playing = false;
+    let done = false;
+
+    function initialPulse(arr){
+      // Pulso depositado en la superficie irradiada x=0 (borde adiabatico/de simetria),
+      // decayendo hacia el interior del material: T0(x) = exp(-(x/w)^2)
+      const w = 0.05*L, amp = 1.0;
+      for(let i=0;i<N;i++){
+        const d = x[i]/w;
+        arr[i] = amp*Math.exp(-d*d);
+      }
+    }
+
+    function reset(){
+      initialPulse(T_f);
+      initialPulse(T_c);
+      initialPulse(T0);
+      q_c.fill(0); // reposo termico inicial: el flujo aun no ha respondido (Cattaneo-Vernotte, condicion "etapa 1")
+      t = 0;
+      done = false;
+      yMaxShared = 1.05;
+    }
+
+    function stepFourier(){
+      tmpT.set(T_f);
+      for(let i=0;i<N;i++){
+        const im1 = i===0 ? 1 : i-1;   // Neumann (espejo): pared adiabatica
+        const ip1 = i===N-1 ? N-2 : i+1;
+        tmpT[i] = T_f[i] + rF*(T_f[ip1] - 2*T_f[i] + T_f[im1]);
+      }
+      T_f.set(tmpT);
+    }
+
+    // Cattaneo-Vernotte resuelto como sistema hiperbolico de primer orden en variables
+    // caracteristicas (invariantes de Riemann) R+ = T + q/Ch, R- = T - q/Ch, cada una
+    // advectada a velocidad +-Ch mediante diferencias contra el viento (upwind) —
+    // esquema monotono que preserva exactamente la velocidad finita de propagacion,
+    // acoplado por separacion de Strang con la relajacion q -> q*exp(-dt/tau0).
+    // (Un Lax-Wendroff clasico sobre (T,q) se probo primero y se descarto: para un
+    // pulso inicial angosto introduce un precursor numerico no fisico por delante del
+    // frente real — dispersión de alta frecuencia propia de esquemas centrados de
+    // segundo orden — que aqui se evita por construccion.)
+    function stepCV(){
+      const dtC_CFL = 0.9*dx/Ch;
+      const nsubC = Math.max(1, Math.ceil(dtFrame/dtC_CFL));
+      const dtc = dtFrame/nsubC;
+      const C = Ch*dtc/dx;
+      const halfDecay = Math.exp(-dtc/(2*tau0));
+
+      for(let s=0;s<nsubC;s++){
+        for(let i=0;i<N;i++) q_c[i]*=halfDecay;
+        for(let i=0;i<N;i++){ const Z=q_c[i]/Ch; Rp[i]=T_c[i]+Z; Rm[i]=T_c[i]-Z; }
+
+        for(let i=1;i<N-1;i++){
+          RpN[i] = Rp[i] - C*(Rp[i]-Rp[i-1]);
+          RmN[i] = Rm[i] + C*(Rm[i+1]-Rm[i]);
+        }
+        // fronteras adiabaticas (q=0): la caracteristica entrante se refleja desde la saliente
+        RmN[0] = Rm[0] + C*(Rm[1]-Rm[0]);
+        RpN[0] = RmN[0];
+        RpN[N-1] = Rp[N-1] - C*(Rp[N-1]-Rp[N-2]);
+        RmN[N-1] = RpN[N-1];
+
+        for(let i=0;i<N;i++){ T_c[i]=(RpN[i]+RmN[i])/2; q_c[i]=Ch*(RpN[i]-RmN[i])/2; }
+        for(let i=0;i<N;i++) q_c[i]*=halfDecay;
+      }
+    }
+
+    function advance(){
+      if(!playing || done) return;
+      for(let k=0;k<nsubF;k++) stepFourier();
+      stepCV();
+      t += dtFrame;
+      if(t>=tMax){ done=true; playing=false; updatePlayButton(); }
+    }
+
+    const cvF = document.getElementById("cvFourier");
+    const cvC = document.getElementById("cvHyperbolic");
+    let gF, gC;
+    const NAtoms = 44;
+    const phasesF = makePhases(NAtoms), phasesC = makePhases(NAtoms);
+    let clock = 0;
+
+    function drawFrame(g, arr, color, showFront, yMax, phases){
+      const {ctx,w,h} = g;
+      ctx.clearRect(0,0,w,h);
+      const padL=10,padR=10,padT=10,padB=8;
+      const latticeH = 64;
+      const gap = 8;
+      const plotW = w-padL-padR;
+      const plotT = padT+latticeH+gap;
+      const plotH = h-plotT-padB;
+      const yMin = -0.03*yMax;
+
+      // franja de red atomica
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(padL-4, padT-4, plotW+8, latticeH+8);
+      ctx.clip();
+      drawLattice(ctx, padL, padT, plotW, latticeH, NAtoms, function(u){
+        const idx = Math.min(N-1, Math.round(u*(N-1)));
+        return arr[idx]/yMax;
+      }, clock, phases);
+      ctx.restore();
+      ctx.strokeStyle = cssVar('--border');
+      ctx.lineWidth = 1;
+      ctx.strokeRect(padL-4+0.5, padT-4+0.5, plotW+8-1, latticeH+8-1);
+
+      // baseline inicial tenue
+      ctx.beginPath();
+      for(let i=0;i<N;i++){
+        const px = padL + (x[i]/L)*plotW;
+        const py = plotT + (1-(T0[i]-yMin)/(yMax-yMin))*plotH;
+        if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+      }
+      ctx.strokeStyle = cssVar('--muted');
+      ctx.globalAlpha = 0.3;
+      ctx.lineWidth = 1.25;
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+
+      // curva actual
+      ctx.beginPath();
+      for(let i=0;i<N;i++){
+        const px = padL + (x[i]/L)*plotW;
+        const py = plotT + (1-(arr[i]-yMin)/(yMax-yMin))*plotH;
+        if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+      }
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 6;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // relleno suave bajo la curva
+      ctx.lineTo(padL+plotW, plotT+plotH);
+      ctx.lineTo(padL, plotT+plotH);
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.globalAlpha = 0.08;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      // frente de onda (CV) — atraviesa tanto la red como la curva
+      if(showFront){
+        const xf = Ch*t;
+        if(xf>0 && xf<L){
+          const px = padL + (xf/L)*plotW;
+          ctx.beginPath();
+          ctx.setLineDash([5,4]);
+          ctx.moveTo(px, padT-4);
+          ctx.lineTo(px, plotT+plotH);
+          ctx.strokeStyle = cssVar('--red');
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+      }
+
+      // eje base
+      ctx.beginPath();
+      ctx.moveTo(padL, plotT+plotH+0.5);
+      ctx.lineTo(padL+plotW, plotT+plotH+0.5);
+      ctx.strokeStyle = cssVar('--border');
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    let yMaxShared = 1.05;
+    function render(){
+      clock += 1/60;
+      // eje vertical compartido, adaptado suavemente al pico actual (misma escala en ambos
+      // paneles para que la comparacion de amplitudes siga siendo honesta)
+      let peak = 0.08;
+      for(let i=0;i<N;i++){ peak = Math.max(peak, T_f[i], T_c[i]); }
+      const target = Math.min(1.05, Math.max(0.12, peak*1.35));
+      yMaxShared += (target-yMaxShared)*0.10;
+
+      drawFrame(gF, T_f, cssVar('--blue'), false, yMaxShared, phasesF);
+      drawFrame(gC, T_c, cssVar('--red'), true, yMaxShared, phasesC);
+      document.getElementById('s1-t').innerHTML = t.toFixed(3)+'<span class="stat-unit">u.a.</span>';
+    }
+
+    function loop(){
+      advance();
+      render();
+      requestAnimationFrame(loop);
+    }
+
+    const playBtn = document.getElementById('s1-play');
+    function updatePlayButton(){
+      playBtn.textContent = playing ? "Pausar" : "Reproducir";
+    }
+
+    function resizeAll(){
+      gF = setupCanvas(cvF);
+      gC = setupCanvas(cvC);
+      render();
+    }
+
+    playBtn.addEventListener('click', function(){
+      if(done){ reset(); }
+      playing = !playing;
+      updatePlayButton();
+    });
+    document.getElementById('s1-reset').addEventListener('click', function(){
+      reset(); playing=false; updatePlayButton(); render();
+    });
+    const tauSlider = document.getElementById('s1-tau');
+    tauSlider.addEventListener('input', function(){
+      tau0 = parseFloat(tauSlider.value);
+      Ch = Math.sqrt(alpha/tau0);
+      document.getElementById('s1-tauval').innerHTML = tau0.toFixed(3)+'<span class="stat-unit">u.a.</span>';
+      document.getElementById('s1-ch').innerHTML = Ch.toFixed(3)+'<span class="stat-unit">u.a.</span>';
+      reset(); playing=false; updatePlayButton(); render();
+    });
+
+    reset();
+    document.getElementById('s1-ch').innerHTML = Ch.toFixed(3)+'<span class="stat-unit">u.a.</span>';
+    window.addEventListener('resize', resizeAll);
+
+    return { start: function(){ resizeAll(); loop(); } };
+  })();
+
+  /* =========================================================
+     ESCENA 2 — Stefan esquematico: fusion + retroceso por ablacion
+     Metodo de capacidad calorifica aparente (Voller & Swaminathan, 1991)
+     ========================================================= */
+  const S2 = (function(){
+    const N = 130;
+    const L = 1.0;
+    const dx = L/(N-1);
+    const alpha0 = 1.0;       // difusividad base (u.a.)
+    const rho = 1.0;
+    const cpBase = 1.0;
+    const Tmelt = 1.0;
+    const dTwindow = 0.10;
+    const Lfusion = 1.6;      // calor latente de fusion (u.a.)
+    const Tvap = 2.3;         // umbral de vaporizacion superficial (u.a.)
+    const Tambient = 0.0;
+    const dt = 0.9 * 0.5*dx*dx/alpha0;
+    const substepsPerFrame = 18;
+    const tMax = 30;
+
+    let flux = 6.0;
+    let T = new Float64Array(N);
+    let phase = new Uint8Array(N); // 0 solido, 1 fundido, 2 ablacionado
+    let sIdx = 0;      // primera celda activa (superficie actual)
+    let t = 0;
+    let playing = false;
+    let done = false;
+
+    function reset(){
+      T.fill(Tambient);
+      phase.fill(0);
+      sIdx = 0;
+      t = 0;
+      done = false;
+    }
+
+    function cpEff(Ti){
+      return (Math.abs(Ti-Tmelt) < dTwindow/2) ? (cpBase + Lfusion/dTwindow) : cpBase;
+    }
+
+    let tmp = new Float64Array(N);
+    function step(){
+      tmp.set(T);
+      for(let i=sIdx;i<N;i++){
+        const im1 = i===sIdx ? sIdx : i-1;   // adiabatico en la nueva superficie
+        const ip1 = i===N-1 ? N-1 : i+1;      // adiabatico en el fondo
+        const lap = T[ip1]-2*T[i]+T[im1];
+        const cpi = cpEff(T[i]);
+        let dT = (alpha0/cpi) * lap/(dx*dx) * dt;
+        if(i===sIdx){
+          dT += (flux/(rho*cpi*dx)) * dt; // fuente superficial del pulso laser
+        }
+        tmp[i] = T[i] + dT;
+      }
+      T.set(tmp);
+
+      // actualizar fases: fundido si T>=Tmelt
+      for(let i=sIdx;i<N;i++){
+        if(phase[i]!==2){
+          phase[i] = (T[i] >= Tmelt) ? 1 : 0;
+        }
+      }
+
+      // ablacion: si la celda superficial supera Tvap, se retira
+      while(sIdx<N-2 && T[sIdx] >= Tvap){
+        phase[sIdx] = 2;
+        sIdx += 1;
+        // la nueva superficie hereda temperatura residual (energia de vaporizacion se lleva el exceso)
+        T[sIdx] = Math.min(T[sIdx], Tmelt*0.35);
+      }
+    }
+
+    function advance(){
+      if(!playing || done) return;
+      for(let k=0;k<substepsPerFrame;k++){
+        step();
+        t += dt;
+        if(t>=tMax || sIdx>=N-3){ done=true; playing=false; updatePlayButton(); break; }
+      }
+    }
+
+    const cv = document.getElementById('cvStefan');
+    let g;
+    const NAtoms2 = 70;
+    const phases2 = makePhases(NAtoms2);
+    const ablatePhaseOffset = new Float64Array(NAtoms2); // para animar la deriva de fragmentos expulsados
+    let clock2 = 0;
+
+    function thetaIndex(){
+      // primer indice desde la superficie donde ya no esta fundido (frontera de fusion)
+      for(let i=sIdx;i<N;i++){ if(phase[i]===0) return i; }
+      return N-1;
+    }
+
+    function render(){
+      clock2 += 1/60;
+      const {ctx,w,h} = g;
+      ctx.clearRect(0,0,w,h);
+      const padL=12, padR=12, padT=14, padB=30;
+      const plotW=w-padL-padR, plotH=h-padT-padB;
+      const bandH = plotH*0.60;
+      const bandY = padT;
+
+      ctx.strokeStyle = cssVar('--border');
+      ctx.lineWidth = 1;
+      ctx.strokeRect(padL+0.5, bandY+0.5, plotW-1, bandH-1);
+
+      // red cristalina: un sitio por muestra a lo largo de la profundidad
+      const th = thetaIndex();
+      for(let a=0;a<NAtoms2;a++){
+        const u = a/(NAtoms2-1);
+        const i = Math.min(N-1, Math.round(u*(N-1)));
+        const px0 = padL + u*plotW;
+        const ph = phases2[a];
+        let color, amp, alphaMul=1, driftX=0, driftY=0;
+
+        if(phase[i]===2){
+          // ablacionado: fragmento se aleja y se desvanece con el tiempo transcurrido desde s(t) lo paso
+          const since = Math.max(0, (sIdx-i)/N*L) / (Ch2Speed());
+          const life = Math.min(1, since*0.6);
+          color = thermalColor(0.78);
+          amp = 3;
+          alphaMul = Math.max(0, 0.5 - life*0.5);
+          driftX = -life*18 - Math.sin(clock2*1.2+ph)*2;
+          driftY = -life*26 + Math.sin(clock2*2.3+ph)*3;
+        } else if(phase[i]===1){
+          color = thermalColor(0.55 + 0.25*Math.min(1,(T[i]-Tmelt)/(Tvap-Tmelt)));
+          amp = 7 + 4*Math.sin(clock2*3+ph)*0 + 7*Math.min(1, (T[i]-Tmelt)/(Tvap-Tmelt+0.001));
+          amp = Math.min(11, 5 + 6*Math.sqrt(Math.max(0,(T[i])/Tvap)));
+        } else {
+          color = thermalColor(0.10 + 0.10*Math.min(1, T[i]/Tmelt));
+          amp = 0.6 + 1.1*Math.sqrt(Math.max(0, T[i]/Tmelt));
+        }
+
+        const jx = Math.sin(clock2*(phase[i]===1?2.6:1.4)+ph)*amp*0.5 + driftX;
+        const jy = Math.cos(clock2*(phase[i]===1?3.1:1.7)+ph*1.6)*amp*0.5 + driftY;
+        const py = bandY + bandH*0.5 + jy*0.6;
+        const r = phase[i]===2 ? 1.6 : (1.7 + 1.4*Math.sqrt(amp));
+
+        ctx.save();
+        ctx.globalAlpha = alphaMul;
+        ctx.shadowColor = color;
+        ctx.shadowBlur = phase[i]===0 ? 2 : 8;
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(px0+jx, py, r, 0, Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+      }
+      function Ch2Speed(){ return 0.03; }
+
+      // marcador de superficie actual s(t)
+      const xs = padL + (sIdx/N)*plotW;
+      ctx.beginPath();
+      ctx.moveTo(xs, bandY-4);
+      ctx.lineTo(xs, bandY+bandH+4);
+      ctx.strokeStyle = cssVar('--red');
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // marcador de frente de fusion theta(t)
+      const xt = padL + (th/N)*plotW;
+      ctx.beginPath();
+      ctx.moveTo(xt, bandY-4);
+      ctx.lineTo(xt, bandY+bandH+4);
+      ctx.strokeStyle = cssVar('--blue');
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4,3]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // curva de temperatura debajo
+      const tPlotY0 = bandY+bandH+12;
+      const tPlotH = plotH-bandH-12;
+      const yMax = Tvap*1.05, yMin = 0;
+      ctx.beginPath();
+      let started=false;
+      for(let i=sIdx;i<N;i++){
+        const px = padL + (i/N)*plotW;
+        const py = tPlotY0 + (1-(T[i]-yMin)/(yMax-yMin))*tPlotH;
+        if(!started){ ctx.moveTo(px,py); started=true; } else ctx.lineTo(px,py);
+      }
+      ctx.strokeStyle = cssVar('--ink');
+      ctx.globalAlpha = 0.5;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([3,2]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.globalAlpha = 1;
+
+      // etiquetas laser / profundidad
+      ctx.fillStyle = cssVar('--muted');
+      ctx.font = "11px 'IBM Plex Mono', monospace";
+      ctx.textAlign = "left";
+      ctx.fillText("← pulso láser", padL, h-8);
+      ctx.textAlign = "right";
+      ctx.fillText("profundidad x →", padL+plotW, h-8);
+
+      document.getElementById('s2-t').innerHTML = t.toFixed(2)+'<span class="stat-unit">u.a.</span>';
+      document.getElementById('s2-s').innerHTML = (sIdx/N*L).toFixed(3)+'<span class="stat-unit">u.a.</span>';
+      document.getElementById('s2-theta').innerHTML = (th/N*L).toFixed(3)+'<span class="stat-unit">u.a.</span>';
+    }
+
+    function loop(){
+      advance();
+      render();
+      requestAnimationFrame(loop);
+    }
+
+    const playBtn = document.getElementById('s2-play');
+    function updatePlayButton(){
+      playBtn.textContent = playing ? "Pausar" : "Reproducir";
+    }
+
+    function resizeAll(){ g = setupCanvas(cv); render(); }
+
+    playBtn.addEventListener('click', function(){
+      if(done){ reset(); }
+      playing = !playing;
+      updatePlayButton();
+    });
+    document.getElementById('s2-reset').addEventListener('click', function(){
+      reset(); playing=false; updatePlayButton(); render();
+    });
+    const fluxSlider = document.getElementById('s2-flux');
+    fluxSlider.addEventListener('input', function(){
+      flux = parseFloat(fluxSlider.value);
+      reset(); playing=false; updatePlayButton(); render();
+    });
+
+    reset();
+    window.addEventListener('resize', resizeAll);
+    return { start: function(){ resizeAll(); loop(); } };
+  })();
+
+  S1.start();
+  S2.start();
+})();
+</script>
