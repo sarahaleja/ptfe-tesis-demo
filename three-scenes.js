@@ -349,6 +349,35 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     anode.position.set(railCenterX, -0.62, 0);
     group.add(anode);
 
+    // Carbonizado (char): residuo de carbono redepositado sobre los electrodos,
+    // no producto de descomposicion local del PTFE alli -- evidenciado por SEM
+    // y rayos X incluso sobre las capas de cobre de los electrodos (Keidar,
+    // Boyd, Gulczinski, Antonsen & Spanjers, 2001, IEPC-01-155). Disperso a lo
+    // largo de todo el canal, sin gradiente espacial especifico (la fuente no
+    // reporta uno); consistente con el mayor tiempo de residencia del carbono
+    // en el canal de descarga frente al fluor (Jakubczak et al., 2024).
+    const NCHAR = 40;
+    const charGeo = new THREE.SphereGeometry(0.11, 7, 7);
+    const charMat = new THREE.MeshStandardMaterial({ color: 0x8a5a2e, roughness: 0.85, metalness: 0.05 });
+    const charMesh = new THREE.InstancedMesh(charGeo, charMat, NCHAR);
+    const charDummy = new THREE.Object3D();
+    for(let i=0;i<NCHAR;i++){
+      const rail = (i % 2 === 0) ? cathode : anode;
+      const railY = rail.position.y;
+      const t = Math.random();
+      const x = railCenterX - railLen/2 + t*railLen;
+      const ang = Math.random()*Math.PI*2;
+      const r = 0.09 + Math.random()*0.035;
+      charDummy.position.set(x, railY + Math.cos(ang)*r, Math.sin(ang)*r);
+      const s = 0.7 + Math.random()*0.9;
+      charDummy.scale.set(s, s*(0.6+Math.random()*0.5), s);
+      charDummy.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, 0);
+      charDummy.updateMatrix();
+      charMesh.setMatrixAt(i, charDummy.matrix);
+    }
+    charMesh.instanceMatrix.needsUpdate = true;
+    group.add(charMesh);
+
     // Camara/chorro de descarga (envoltura tenue, solo para dar contexto espacial)
     const chamberLen = (railCenterX+railLen/2) - (ptfe.position.x-0.3) + 0.4;
     const chamberGeo = new THREE.CylinderGeometry(0.95, 0.95, chamberLen, 22, 1, true);

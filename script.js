@@ -809,15 +809,29 @@
       ctx.clearRect(0,0,w,h);
       const padL=8,padR=14,padT=22,padB=44;
       const plotW=w-padL-padR, plotH=h-padT-padB;
+      // La barra fantasma (contorno punteado) en C no es un segundo dato medido:
+      // es la mitad de la barra de F (frac/2), la referencia visual de a donde
+      // llegaria C si el plasma saliera en la proporcion 2F:1C del monomero del
+      // PTFE. La brecha entre el contorno y la barra solida es, visualmente, la
+      // misma perdida de utilizacion de masa que reporta el stat-tile "~1.9x"
+      // (Jakubczak et al., 2024) -- no un dato independiente nuevo.
       const bars = [
         { label:'F (todos los estados)', frac:0.94, color: PTFE.cssVar('--blue'), tag:'F₂⁺ >40%' },
-        { label:'C (trazas)', frac:0.09, color: PTFE.cssVar('--red'), tag:'trazas' }
+        { label:'C (trazas)', frac:0.09, color: PTFE.cssVar('--red'), tag:'trazas', ghost:0.47, ghostTag:'2F:1C esperaría esto' }
       ];
       const bh = plotH/bars.length*0.46;
       bars.forEach(function(b,i){
         const cy = padT + plotH*(i+0.5)/bars.length;
         ctx.fillStyle = PTFE.cssVar('--border');
         ctx.fillRect(padL, cy-bh/2, plotW*0.62, bh);
+        if(b.ghost){
+          ctx.save();
+          ctx.strokeStyle = PTFE.cssVar('--muted');
+          ctx.lineWidth = 1.3;
+          ctx.setLineDash([3,3]);
+          ctx.strokeRect(padL+0.5, cy-bh/2+0.5, plotW*0.62*b.ghost-1, bh-1);
+          ctx.restore();
+        }
         ctx.save();
         ctx.shadowColor = b.color;
         ctx.shadowBlur = 6;
@@ -832,13 +846,22 @@
         ctx.fillStyle = PTFE.cssVar('--ink');
         ctx.textBaseline = 'middle';
         ctx.fillText(b.tag, padL+plotW*0.62+6, cy);
+        if(b.ghost){
+          ctx.save();
+          ctx.fillStyle = PTFE.cssVar('--muted');
+          ctx.font = "8px 'IBM Plex Mono', monospace";
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'top';
+          ctx.fillText(b.ghostTag, padL+plotW*0.62*b.ghost, cy+bh/2+3);
+          ctx.restore();
+        }
       });
       ctx.save();
       ctx.font = "9px 'IBM Plex Mono', monospace";
       ctx.fillStyle = PTFE.cssVar('--muted');
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
-      wrapText(ctx, 'tiempo de residencia en el canal: mayor para C (Jakubczak et al., 2024)', padL, padT+plotH+8, plotW+padR-2, 11);
+      wrapText(ctx, 'línea punteada: C esperado con 2F:1C; residencia en canal mayor para C (Jakubczak et al., 2024)', padL, padT+plotH+12, plotW+padR-2, 11);
       ctx.restore();
     }
 
