@@ -786,6 +786,23 @@
   const S4 = (function(){
     const cvC = document.getElementById('cvComposition');
     let gC2;
+    const tauMirror = document.getElementById('s4-tau-mirror');
+    let lastTauText = '';
+
+    // Vinculo conceptual (no numerico): refleja el mismo tau0 que se ajusta
+    // en la Escena 1 dentro del recuadro "Bloques 1-3" del pipeline de esta
+    // escena, para dejar visualmente claro que es la misma variable, no una
+    // nueva. No calcula ningun valor de empuje a partir de ella.
+    function mirrorTau(){
+      if(!tauMirror) return;
+      const src = document.getElementById('s1-tauval');
+      if(!src) return;
+      const text = src.innerHTML;
+      if(text !== lastTauText){
+        lastTauText = text;
+        tauMirror.innerHTML = 'τ₀ = '+text;
+      }
+    }
 
     function renderComposition(){
       const {ctx,w,h} = gC2;
@@ -844,6 +861,7 @@
 
     function render(){
       renderComposition();
+      mirrorTau();
     }
 
     function loop(){
@@ -853,7 +871,7 @@
 
     function resizeAll(){
       gC2 = PTFE.setupCanvas(cvC);
-      if(window.PTFE3D && window.PTFE3D.ion) window.PTFE3D.ion.resize();
+      if(window.PTFE3D && window.PTFE3D.engine) window.PTFE3D.engine.resize();
     }
 
     window.addEventListener('resize', function(){ resizeAll(); render(); });

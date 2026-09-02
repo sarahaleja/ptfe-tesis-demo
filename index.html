@@ -220,17 +220,17 @@
 
   <section class="scene" id="scene4">
     <div class="scene-head">
-      <div class="scene-kicker">Escena 4 &middot; lo que se desprende &middot; acoplamiento superficie&ndash;plasma</div>
-      <h2>Después de la superficie: por qué domina el flúor</h2>
-      <p>Lo que se desprende de la superficie ablacionada no llega al plasma como una mezcla homogénea de carbono y flúor. Jakubczak, Jardin &amp; Kurzyna (2024) midieron, en un PPT de PTFE de 1 J, que el flúor domina el haz iónico expulsado (F&#8314; hasta F&#8310;&#8314;, con F&#8322;&#8314; por encima del 40&nbsp;% del plasma), mientras que el carbono aparece solo en trazas: una asimetría que contradice la proporción estequiométrica 2F:1C del propio PTFE.</p>
+      <div class="scene-kicker">Escena 4 &middot; el motor &middot; arquitectura híbrida láser+arco</div>
+      <h2>Del pulso de láser al empuje: dos etapas, no una</h2>
+      <p>El propulsor de esta tesis no ablaciona con el láser solo. En la arquitectura híbrida láser+arco (Horisawa, Kawakami &amp; Kimura, 2005), el pulso láser opera a intensidad baja: su único trabajo es crear un puente delgado de plasma conductor sobre la superficie del PTFE. Ese puente cierra el circuito entre cátodo y ánodo, conectados a un banco de capacitores ya cargado; al fluir la corriente de descarga, el campo magnético que ella misma induce empuja todo el plasma hacia afuera por fuerza de Lorentz (J&times;B) &mdash; una segunda etapa de aceleración superpuesta a la expansión térmica inicial, que no existe en un propulsor de solo láser.</p>
     </div>
 
     <div class="panel hud-frame">
       <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
       <div class="canvas-grid ion-grid">
         <div class="canvas-cell">
-          <div class="canvas-title"><span class="swatch" style="background:var(--blue); color:var(--blue)"></span><b>Capa de no equilibrio</b>&nbsp;&mdash; 3D, gira con el mouse</div>
-          <div class="gl-canvas-3d" id="gl-ion" style="aspect-ratio:620/260;" role="img" aria-label="Escena 3D de trayectorias de iones saliendo de la superficie de PTFE en ablacion, con flujo de retorno de atomos de carbono">
+          <div class="canvas-title"><span class="swatch" style="background:var(--blue); color:var(--blue)"></span><b>Motor híbrido láser+arco</b>&nbsp;&mdash; 3D, gira con el mouse</div>
+          <div class="gl-canvas-3d" id="gl-engine" style="aspect-ratio:620/280;" role="img" aria-label="Escena 3D del motor hibrido laser+arco: laser incidiendo sobre el propelente de PTFE, tubo ceramico aislante, catodo y anodo con el puente de plasma, y el chorro de plasma acelerado saliendo del propulsor">
             <div class="gl-loading">cargando 3D…</div>
             <div class="gl-hint">arrastra para rotar</div>
           </div>
@@ -241,9 +241,10 @@
         </div>
       </div>
       <div class="legend">
-        <span class="item"><span class="dot" style="background:var(--blue); color:var(--blue)"></span>Iones de flúor, escapan (F&#8314;&#8211;F&#8310;&#8314;)</span>
-        <span class="item"><span class="dot" style="background:var(--red); color:var(--red)"></span>Átomos de carbono, retornan a la superficie</span>
-        <span class="item"><span class="line dash" style="border-color:var(--border-bright); opacity:0.8"></span>Capa de no equilibrio (Knudsen)</span>
+        <span class="item"><span class="dot" style="background:var(--blue); color:var(--blue)"></span>Láser Nd:YAG, 1064&nbsp;nm (Horisawa et al., 2005)</span>
+        <span class="item"><span class="dot" style="background:var(--muted-2); color:var(--muted-2)"></span>Propelente PTFE (zona de ablación)</span>
+        <span class="item"><span class="line dash" style="border-color:var(--border-bright); opacity:0.9"></span>Tubo cerámico aislante (separa ablación y aceleración)</span>
+        <span class="item"><span class="dot" style="background:var(--red); color:var(--red)"></span>Descarga cátodo&ndash;ánodo (arco, J&times;B)</span>
       </div>
       <div class="stat-row">
         <div class="stat-tile">
@@ -259,15 +260,34 @@
           <div class="stat-value accent-red">~1.9&times;<span class="stat-unit">mayor</span></div>
         </div>
       </div>
+      <div class="pipeline">
+        <div class="pipeline-step">
+          <div class="pipeline-label">Bloques 1&ndash;3 &middot; Escena 1</div>
+          <div class="pipeline-value" id="s4-tau-mirror">τ₀ = 0.150<span class="stat-unit">u.a.</span></div>
+          <div class="pipeline-desc">frente térmico de ablación fija la condición inicial del plasma</div>
+        </div>
+        <div class="pipeline-arrow">+</div>
+        <div class="pipeline-step">
+          <div class="pipeline-label">Bloque 4</div>
+          <div class="pipeline-value accent-red">Fuerza de Lorentz</div>
+          <div class="pipeline-desc">J&times;B, etapa electromagnética superpuesta (Horisawa et al., 2005)</div>
+        </div>
+        <div class="pipeline-arrow">=</div>
+        <div class="pipeline-step">
+          <div class="pipeline-label">Empuje del motor</div>
+          <div class="pipeline-value">dos etapas</div>
+          <div class="pipeline-desc">no cuantificado aquí &mdash; ver nota</div>
+        </div>
+      </div>
     </div>
 
     <div class="note">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>
-      <span><strong>El carbono se queda; el flúor se va.</strong> Keidar, Boyd, Gulczinski, Antonsen &amp; Spanjers (2001) muestran, mediante análisis SEM y de rayos X, que el carbonizado ("char") superficial del PTFE proviene mayoritariamente de carbono redepositado desde el plasma, no de descomposición local incompleta. Jakubczak et al. (2024) atribuyen la escasez de carbono en el haz saliente a su mayor tiempo de residencia dentro del canal de descarga: el flúor escapa antes de poder redepositarse. A escala microscópica, en la interfaz misma, el modelo cinético de Keidar, Boyd &amp; Beilis (2001) formaliza un fenómeno consistente con este: el flujo de átomos que regresan a la superficie (returned atom flux), generado dentro de una capa de no equilibrio adyacente a la superficie durante la ablación.</span>
+      <span><strong>Por qué hace falta el arco, y no solo el láser.</strong> Horisawa et al. (2005) miden que un propulsor de solo láser alcanza un impulso específico de 100&ndash;300&nbsp;s con eficiencia de empuje de 1&ndash;4&nbsp;%, mientras que la configuración híbrida llega hasta ~780&nbsp;s de impulso específico y ~9&nbsp;% de eficiencia. La razón física: en el láser puro, la energía se reparte termodinámicamente entre movimiento térmico desordenado (que no empuja) y movimiento dirigido; la fuerza de Lorentz, al actuar como fuerza de cuerpo sobre todo el volumen de plasma, no está sujeta a esa misma partición. El costo de esa ganancia es reintroducir cátodo, ánodo y sus mecanismos de pérdida propios: Keidar, Boyd, Gulczinski, Antonsen &amp; Spanjers (2001) muestran, por SEM y rayos X, que el carbonizado ("char") sobre esas superficies proviene mayoritariamente de carbono redepositado desde el plasma, consistente con el modelo cinético de flujo de retorno (returned atom flux) de Keidar, Boyd &amp; Beilis (2001); Jakubczak et al. (2024) atribuyen la escasez de carbono en el haz saliente a su mayor tiempo de residencia dentro del canal de descarga frente al flúor.</span>
     </div>
     <div class="note warn">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 21h20L12 2Z"/><path d="M12 9v5"/><path d="M12 17h.01"/></svg>
-      <span><strong>Lo esquemático de este panel.</strong> Las trayectorias del diagrama son ilustrativas: representan el concepto de flujo de retorno y transporte diferencial de especies, no una simulación de dinámica de partículas. Los números de composición (F&#8322;&#8314; &gt;40&nbsp;%, utilización de masa 9.81&ndash;12.27&nbsp;%) sí son datos medidos por Jakubczak et al. (2024); la geometría de las trayectorias y el espesor de la capa de no equilibrio se dibujan a escala cualitativa, no cuantitativa.</span>
+      <span><strong>Lo esquemático de este panel.</strong> La geometría del motor 3D (proporciones del propelente, el tubo cerámico, la separación entre electrodos, el chorro de plasma) es ilustrativa, a escala cualitativa &mdash; no son las dimensiones reales de ningún propulsor específico. El régimen láser sí está anclado a la literatura (Nd:YAG, 1064&nbsp;nm, Horisawa et al., 2005; ver también Escena 3.4 del marco teórico), y los números de composición (F&#8322;&#8314; &gt;40&nbsp;%, utilización de masa 9.81&ndash;12.27&nbsp;%) sí son datos medidos por Jakubczak et al. (2024). El recuadro "τ₀ / Fuerza de Lorentz / Empuje" es un vínculo <em>conceptual</em>: muestra dónde entra cada bloque del marco teórico en la cadena causal del empuje, no un acoplamiento numérico resuelto entre ambos &mdash; esta tesis no calcula todavía un valor de empuje combinando las dos etapas.</span>
     </div>
   </section>
 
@@ -287,6 +307,7 @@
     <li>Rae, P. J., &amp; Brown, E. N. (2015). Some observations on measuring sound speeds in polymers using time-of-flight. <em>Experimental Techniques.</em> https://doi.org/10.1111/ext.12163</li>
     <li>Rae, P. J., &amp; Dattelbaum, D. M. (2004). The properties of poly(tetrafluoroethylene) (PTFE) in compression. <em>Polymer</em>, 45, 7615&#8211;7625.</li>
     <li>Wu, J., et al. (2025). <em>Numerical Simulation of Pulsed Plasma Thruster.</em> Springer. https://doi.org/10.1007/978-981-97-7958-1</li>
+    <li>Horisawa, H., Kawakami, M., &amp; Kimura, I. (2005). Laser-assisted pulsed plasma thruster for space propulsion applications. <em>Applied Physics A</em>, 81(2), 303&#8211;310. https://doi.org/10.1007/s00339-005-3210-8</li>
     <li>Jakubczak, M., Jardin, A., &amp; Kurzyna, J. (2024). Analysis of composition and dynamics of the plasma plume emitted by a 1 J pulsed plasma thruster fed with polytetrafluoroethylene and determination of thruster efficiency components. <em>Physics of Plasmas</em>, 31(5), 053501. https://doi.org/10.1063/5.0189700</li>
     <li>Keidar, M., Boyd, I. D., Gulczinski, F. S., Antonsen, E., &amp; Spanjers, G. G. (2001). Analyses of Teflon surface charring and near field plume of a micro-pulsed plasma thruster. IEPC-01-155, 27th International Electric Propulsion Conference.</li>
     <li>Keidar, M., Boyd, I. D., &amp; Beilis, I. I. (2001). On the model of Teflon ablation in an ablation-controlled discharge. <em>Journal of Physics D: Applied Physics</em>, 34(11), 1675&#8211;1677. https://doi.org/10.1088/0022-3727/34/11/318</li>

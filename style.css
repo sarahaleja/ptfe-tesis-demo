@@ -244,6 +244,50 @@
     background:rgba(5,7,14,0.55); padding:2px 6px; border-radius:3px;
     pointer-events:none; opacity:0.85;
   }
+  .gl-label{
+    position:absolute; top:0; left:0; z-index:2;
+    font-family:"IBM Plex Mono", monospace; font-size:0.66rem;
+    letter-spacing:0.02em; white-space:nowrap;
+    background:rgba(5,7,14,0.62); padding:1px 5px; border-radius:2px;
+    pointer-events:none; transform:translate(-50%,-50%);
+    transition:opacity 0.15s linear;
+  }
+
+  /* ---------- Pipeline conceptual (Escena 4: vinculo tau0 -> empuje) ---------- */
+  .pipeline{
+    display:flex; align-items:stretch; gap:0.6rem;
+    padding:0.9rem 1.1rem 1.1rem;
+    border-top:1px solid var(--border);
+    flex-wrap:wrap;
+  }
+  .pipeline-step{
+    flex:1 1 180px;
+    background:var(--surface-2);
+    border:1px solid var(--border-bright);
+    border-radius:6px;
+    padding:0.65rem 0.8rem;
+  }
+  .pipeline-label{
+    font-family:"IBM Plex Mono", monospace; font-size:0.68rem;
+    letter-spacing:0.06em; text-transform:uppercase; color:var(--muted);
+    margin-bottom:0.3rem;
+  }
+  .pipeline-value{
+    font-family:"Chakra Petch", sans-serif; font-weight:600;
+    font-size:1.05rem; color:var(--ink); margin-bottom:0.3rem;
+  }
+  .pipeline-desc{
+    font-size:0.74rem; color:var(--muted); line-height:1.35;
+  }
+  .pipeline-arrow{
+    display:flex; align-items:center; justify-content:center;
+    font-family:"Chakra Petch", sans-serif; font-weight:600;
+    font-size:1.3rem; color:var(--muted-2); flex:0 0 auto; padding:0 0.15rem;
+  }
+  @media (max-width:720px){
+    .pipeline{ flex-direction:column; }
+    .pipeline-arrow{ transform:rotate(90deg); padding:0.2rem 0; }
+  }
 
   /* ---------- Stat tiles (lectura tipo instrumento) ---------- */
   .stat-row{
