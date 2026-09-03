@@ -3,31 +3,31 @@
    para la Escena 3 (cadena helicoidal, empaquetamiento hexagonal)
    y la Escena 4 (motor hibrido laser+arco: laser, PTFE, tubo
    ceramico, catodo/anodo y el chorro de plasma acelerado).
-
+ 
    Cargado como <script type="module">. Expone window.PTFE3D y
    dispara el evento 'ptfe3d-ready' una vez que las tres escenas
    existen; script.js (clasico) las alimenta con el estado fisico
    (fase cristalina, conformacion, giro) calculado en la Escena 3.
-
+ 
    Todas las geometrias son esquematicas / a escala cualitativa,
    igual que sus antecesoras en canvas 2D — ver las notas de cada
    escena en index.html para el alcance declarado de cada dibujo.
    ========================================================= */
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
+ 
 (function(){
   "use strict";
-
+ 
   function cssVar(name){
     return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   }
-
+ 
   function markReady(container){
     const ph = container.querySelector('.gl-loading');
     if(ph) ph.remove();
   }
-
+ 
   // Capa de etiquetas HTML ancladas a puntos 3D (proyeccion pantalla), estilo
   // "callout de banco de pruebas" — mismo lenguaje visual que drawLeaderLabel()
   // en los paneles 2D, pero siguiendo la rotacion de la camara en vivo.
@@ -54,18 +54,18 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     el.style.left = x+'px';
     el.style.top = y+'px';
   }
-
+ 
   function baseSetup(container, opts){
     opts = opts || {};
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(opts.fov || 40, 1, 0.1, 100);
     camera.position.copy(opts.camPos || new THREE.Vector3(0, 3, 8));
-
+ 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.domElement.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;';
     container.appendChild(renderer.domElement);
-
+ 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
@@ -75,7 +75,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     controls.maxDistance = opts.maxDist || 24;
     controls.autoRotate = !!opts.autoRotate;
     controls.autoRotateSpeed = 0.6;
-
+ 
     scene.add(new THREE.AmbientLight(0xffffff, 0.6));
     const key = new THREE.DirectionalLight(0xffffff, 1.05);
     key.position.set(4, 6, 6);
@@ -83,7 +83,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     const rim = new THREE.DirectionalLight(0x3d8cff, 0.55);
     rim.position.set(-5, -3, -4);
     scene.add(rim);
-
+ 
     function fit(){
       const w = container.clientWidth, h = container.clientHeight;
       if(w <= 0 || h <= 0) return;
@@ -93,10 +93,10 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     }
     fit();
     window.addEventListener('resize', fit);
-
+ 
     return { scene, camera, renderer, controls, fit };
   }
-
+ 
   // ---------------------------------------------------------------
   // Cadena helicoidal (Escena 3, panel izquierdo). Analogo 3D de la
   // vista "corte lateral": el eje de la cadena es el eje X; el radio
@@ -109,39 +109,39 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     const b = baseSetup(container, {
       fov: 36, camPos: new THREE.Vector3(0.6, 3.4, 9.2), minDist: 5, maxDist: 18
     });
-
+ 
     const group = new THREE.Group();
     b.scene.add(group);
-
+ 
     const N = 56, L = 8.6, R = 0.95, rSat = 0.46;
-
+ 
     const carbonGeo = new THREE.SphereGeometry(0.115, 20, 16);
     const carbonMat = new THREE.MeshStandardMaterial({ color: 0x3d8cff, roughness: 0.35, metalness: 0.12, emissive: 0x0c1e44, emissiveIntensity: 0.6 });
     const carbons = new THREE.InstancedMesh(carbonGeo, carbonMat, N);
     group.add(carbons);
-
+ 
     const satGeo = new THREE.SphereGeometry(0.05, 10, 8);
     const satMat = new THREE.MeshStandardMaterial({ color: 0x96b4ff, transparent: true, opacity: 0.55, roughness: 0.6 });
     const satA = new THREE.InstancedMesh(satGeo, satMat, N);
     const satB = new THREE.InstancedMesh(satGeo, satMat, N);
     group.add(satA, satB);
-
+ 
     const axisGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-L/2,0,0), new THREE.Vector3(L/2,0,0)]);
     const axisMat = new THREE.LineDashedMaterial({ color: 0x2c3868, dashSize: 0.12, gapSize: 0.09, transparent: true, opacity: 0.75 });
     const axisLine = new THREE.Line(axisGeo, axisMat);
     axisLine.computeLineDistances();
     group.add(axisLine);
-
+ 
     const dummy = new THREE.Object3D();
     let turns = 5.0, clock = 0;
-
+ 
     function setState(state){
       turns = state.turns;
       carbonMat.color.set(state.colorHex);
       carbonMat.emissive.set(state.colorHex);
       carbonMat.emissiveIntensity = 0.45;
     }
-
+ 
     function rebuild(){
       for(let i=0;i<N;i++){
         const u = i/(N-1);
@@ -150,7 +150,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         const y = R*Math.cos(theta), z = R*Math.sin(theta);
         dummy.position.set(x,y,z); dummy.updateMatrix();
         carbons.setMatrixAt(i, dummy.matrix);
-
+ 
         const sTheta = theta*1.6;
         dummy.position.set(x, y - rSat*Math.cos(sTheta), z + rSat*Math.sin(sTheta));
         dummy.updateMatrix();
@@ -163,7 +163,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
       satA.instanceMatrix.needsUpdate = true;
       satB.instanceMatrix.needsUpdate = true;
     }
-
+ 
     function tick(dt){
       clock += dt;
       rebuild();
@@ -171,10 +171,10 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
       b.renderer.render(b.scene, b.camera);
       markReady(container);
     }
-
+ 
     return { setState, resize: b.fit, tick };
   }
-
+ 
   // ---------------------------------------------------------------
   // Empaquetamiento hexagonal (Escena 3, panel central). Cada cadena
   // se representa como un cilindro extendido a lo largo de Y (en la
@@ -187,20 +187,20 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     const b = baseSetup(container, {
       fov: 38, camPos: new THREE.Vector3(4.4, 4.4, 6.6), minDist: 4, maxDist: 16
     });
-
+ 
     const group = new THREE.Group();
     b.scene.add(group);
-
+ 
     const R = 0.42, chainH = 3.0;
     const dx = R*2*1.35, dz = dx*Math.sqrt(3)/2;
     const cols = 4, rows = 4;
     const count = cols*rows;
-
+ 
     const chainGeo = new THREE.CylinderGeometry(R, R, chainH, 22, 1, false);
     const chainMat = new THREE.MeshStandardMaterial({ color: 0x3d8cff, roughness: 0.4, metalness: 0.1, emissive: 0x0c1e44, emissiveIntensity: 0.45 });
     const chains = new THREE.InstancedMesh(chainGeo, chainMat, count);
     group.add(chains);
-
+ 
     const positions = [];
     const dummy = new THREE.Object3D();
     const totalW = (cols-1)*dx, totalD = (rows-1)*dz;
@@ -217,13 +217,13 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
       }
     }
     chains.instanceMatrix.needsUpdate = true;
-
+ 
     const satGeo = new THREE.SphereGeometry(0.055, 8, 8);
     const satMat = new THREE.MeshStandardMaterial({ color: 0x96b4ff, transparent: true, opacity: 0.5 });
     const NSAT = 6;
     const sats = new THREE.InstancedMesh(satGeo, satMat, count*NSAT);
     group.add(sats);
-
+ 
     // celda unitaria primitiva: v1=(dx,0,0), v2=(dx/2,0,dz) generan la red hexagonal
     // (triangular) en el plano XZ (igual que en la version 2D); v3=(0,chainH,0) la
     // extrude a lo largo del eje de cadena. Contiene un unico punto de red, como
@@ -245,14 +245,14 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     const cellLines = new THREE.LineSegments(cellGeo, cellMat);
     cellLines.computeLineDistances();
     group.add(cellLines);
-
+ 
     let clock = 0;
     function setState(state){
       chainMat.color.set(state.colorHex);
       chainMat.emissive.set(state.colorHex);
       chainMat.emissiveIntensity = 0.35;
     }
-
+ 
     function tick(dt){
       clock += dt;
       let s = 0;
@@ -273,10 +273,10 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
       b.renderer.render(b.scene, b.camera);
       markReady(container);
     }
-
+ 
     return { setState, resize: b.fit, tick };
   }
-
+ 
   // ---------------------------------------------------------------
   // Motor hibrido laser+arco (Escena 4). Arquitectura definida en el
   // Marco Teorico de la tesis (Sec. 3.2-3.3), sustentada en Horisawa,
@@ -297,11 +297,11 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
       fov: 34, camPos: new THREE.Vector3(3.0, 4.3, 13.2), target: new THREE.Vector3(0.4,0,0),
       minDist: 7, maxDist: 28
     });
-
+ 
     const group = new THREE.Group();
     b.scene.add(group);
     const labelLayer = makeLabelLayer(container);
-
+ 
     // Propelente PTFE (zona de ablacion)
     const ptfeGeo = new THREE.BoxGeometry(0.6, 1.0, 1.0);
     const ptfeMat = new THREE.MeshStandardMaterial({ color: 0x5c6690, roughness: 0.8, metalness: 0.05 });
@@ -311,7 +311,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     const ptfeEdges = new THREE.LineSegments(new THREE.EdgesGeometry(ptfeGeo), new THREE.LineBasicMaterial({ color: 0x2c3868 }));
     ptfeEdges.position.copy(ptfe.position);
     group.add(ptfeEdges);
-
+ 
     // Laser: emisor (housing) + haz hasta la superficie del PTFE
     const laserPos = new THREE.Vector3(-6.6, 2.4, 0.9);
     const hitPoint = new THREE.Vector3(-4.4, 0.15, 0.15);
@@ -325,7 +325,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     const hitGlow = new THREE.Mesh(new THREE.SphereGeometry(0.075, 12, 12), new THREE.MeshBasicMaterial({ color: 0x9fc4ff }));
     hitGlow.position.copy(hitPoint);
     group.add(hitGlow);
-
+ 
     // Tubo ceramico aislante: separa la zona de ablacion laser de la zona de aceleracion
     const collarX = -2.9;
     const collarGeo = new THREE.TorusGeometry(0.85, 0.05, 10, 24);
@@ -334,7 +334,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     collar.rotation.y = Math.PI/2;
     collar.position.set(collarX, 0, 0);
     group.add(collar);
-
+ 
     // Catodo y anodo: rieles paralelos a lo largo de la zona de aceleracion
     const railLen = 5.6;
     const railCenterX = 0.8;
@@ -348,7 +348,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     anode.rotation.z = Math.PI/2;
     anode.position.set(railCenterX, -0.62, 0);
     group.add(anode);
-
+ 
     // Carbonizado (char): residuo de carbono redepositado sobre los electrodos,
     // no producto de descomposicion local del PTFE alli -- evidenciado por SEM
     // y rayos X incluso sobre las capas de cobre de los electrodos (Keidar,
@@ -377,7 +377,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     }
     charMesh.instanceMatrix.needsUpdate = true;
     group.add(charMesh);
-
+ 
     // Camara/chorro de descarga (envoltura tenue, solo para dar contexto espacial)
     const chamberLen = (railCenterX+railLen/2) - (ptfe.position.x-0.3) + 0.4;
     const chamberGeo = new THREE.CylinderGeometry(0.95, 0.95, chamberLen, 22, 1, true);
@@ -386,7 +386,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     chamber.rotation.z = Math.PI/2;
     chamber.position.set((ptfe.position.x-0.3 + railCenterX+railLen/2)/2, 0, 0);
     group.add(chamber);
-
+ 
     // Puente de plasma (arco) justo tras el tubo ceramico: el laser lo crea, la
     // corriente de descarga lo atraviesa. Se redibuja con jitter para sugerir
     // una descarga viva, no estatica.
@@ -407,7 +407,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
       group.add(arcLine);
     }
     rebuildArc(0);
-
+ 
     // Banco de capacitores + conexiones a los electrodos
     const capMat = new THREE.MeshStandardMaterial({ color: 0x232b4e, roughness: 0.6 });
     for(let i=0;i<3;i++){
@@ -418,20 +418,46 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     const wireMat = new THREE.LineBasicMaterial({ color: 0x5c6690 });
     group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-0.6,-1.6,1.0), new THREE.Vector3(-0.6,0.62,0.05)]), wireMat));
     group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0.24,-1.6,1.0), new THREE.Vector3(0.24,-0.62,0.05)]), wireMat));
-
-    // Plasma acelerado: chorro de particulas saliendo por el extremo abierto
-    const NP = 42;
-    const pGeo = new THREE.SphereGeometry(0.045, 8, 8);
-    const pMat = new THREE.MeshStandardMaterial({ color: 0x3d8cff, emissive: 0x0c1e44, emissiveIntensity: 0.8 });
-    const particles = new THREE.InstancedMesh(pGeo, pMat, NP);
-    group.add(particles);
-    const seeds = [];
-    for(let i=0;i<NP;i++) seeds.push({ a: (i/NP)*Math.PI*2*3.1, r: 0.05+((i*37)%100)/100*0.45, phase: (i*0.6180339887)%1 });
-
+ 
+    // Plasma acelerado: dos especies con transporte diferencial (Jakubczak et
+    // al., 2024). La mayoria (azul, fluor) nace en el puente de plasma, cruza
+    // todo el canal cátodo-ánodo y escapa como el chorro de plasma. Una
+    // minoria (café, carbono) nace igual pero se detiene a medio camino del
+    // canal, deriva hacia el riel mas cercano y se desvanece ahi -- fundiendose
+    // visualmente con el carbonizado estatico en vez de llegar a la salida.
+    // La proporcion azul:café es ilustrativa (mayoria clara / minoria
+    // ocasional), no una fraccion medida particula-por-particula: la fuente
+    // solo da "fluor domina, carbono en trazas", no un conteo por particula.
+    const exhaustStart = railCenterX + railLen/2, exhaustEnd = exhaustStart + 2.3;
+    const channelStart = arcX;
+    const channelLen = exhaustStart - channelStart;
+ 
+    const NP_F = 34;
+    const pGeoF = new THREE.SphereGeometry(0.045, 8, 8);
+    const pMatF = new THREE.MeshStandardMaterial({ color: 0x3d8cff, emissive: 0x0c1e44, emissiveIntensity: 0.8 });
+    const particlesF = new THREE.InstancedMesh(pGeoF, pMatF, NP_F);
+    group.add(particlesF);
+    const seedsF = [];
+    for(let i=0;i<NP_F;i++) seedsF.push({ a: (i/NP_F)*Math.PI*2*3.1, r: 0.05+((i*37)%100)/100*0.45, phase: (i*0.6180339887)%1 });
+ 
+    const NP_C = 8;
+    const pGeoC = new THREE.SphereGeometry(0.06, 8, 8);
+    const pMatC = new THREE.MeshStandardMaterial({ color: 0x8a5a2e, emissive: 0x2a1c10, emissiveIntensity: 0.5, roughness: 0.8 });
+    const particlesC = new THREE.InstancedMesh(pGeoC, pMatC, NP_C);
+    group.add(particlesC);
+    const seedsC = [];
+    for(let i=0;i<NP_C;i++){
+      seedsC.push({
+        phase: (i*0.4142135624)%1,
+        captureFrac: 0.35 + ((i*53)%100)/100*0.5,
+        rail: (i%2===0) ? 0.62 : -0.62,
+        jitter: ((i*17)%100)/100*0.3 - 0.15
+      });
+    }
+ 
     const dummy = new THREE.Object3D();
     let clock = 0;
-    const exhaustStart = railCenterX + railLen/2, exhaustEnd = exhaustStart + 2.3;
-
+ 
     const labelDefs = [
       { text: 'Láser Nd:YAG, 1064 nm', pos: laserPos },
       { text: 'PTFE (ablación)', pos: new THREE.Vector3(ptfe.position.x, -1.5, 0) },
@@ -439,48 +465,82 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
       { text: 'Descarga (arco)', pos: new THREE.Vector3(arcX+1.0, -1.6, 0) },
       { text: 'Cátodo', pos: new THREE.Vector3(railCenterX+0.8, 1.5, 0) },
       { text: 'Ánodo', pos: new THREE.Vector3(railCenterX+0.8, -1.6, 0) },
-      { text: 'Plasma acelerado →', pos: new THREE.Vector3(exhaustStart+1.4, 0.9, 0.6) }
+      { text: 'Plasma acelerado →', pos: new THREE.Vector3(exhaustStart+1.4, 0.9, 0.6) },
+      { text: 'Carbonizado (char)', pos: new THREE.Vector3(0.5, -2.6, 0) }
     ];
     const labelEls = labelDefs.map(function(d){ return { el: addLabel(labelLayer, d.text), pos: d.pos }; });
-
+ 
     function tick(dt){
       clock += dt;
       if(Math.floor(clock*7) !== Math.floor((clock-dt)*7)) rebuildArc(clock);
-
-      for(let i=0;i<NP;i++){
-        const s = seeds[i];
-        const t = (clock*0.5 + s.phase) % 1;
-        const x = exhaustStart + t*(exhaustEnd-exhaustStart);
-        const spread = 0.08 + t*0.6;
+ 
+      for(let i=0;i<NP_F;i++){
+        const s = seedsF[i];
+        const t = (clock*0.35 + s.phase) % 1;
+        const x = channelStart + t*(exhaustEnd-channelStart);
+        let spread, scale;
+        if(x < exhaustStart){
+          spread = 0.22;
+          scale = 1;
+        } else {
+          const tp = (x-exhaustStart)/(exhaustEnd-exhaustStart);
+          spread = 0.08 + tp*0.6;
+          scale = 1 - tp*0.4;
+        }
         dummy.position.set(x, Math.sin(s.a)*s.r*spread/0.5, Math.cos(s.a)*s.r*spread/0.5);
-        dummy.scale.setScalar(1 - t*0.4);
+        dummy.scale.setScalar(scale);
         dummy.updateMatrix();
-        particles.setMatrixAt(i, dummy.matrix);
+        particlesF.setMatrixAt(i, dummy.matrix);
       }
-      particles.instanceMatrix.needsUpdate = true;
-
+      particlesF.instanceMatrix.needsUpdate = true;
+ 
+      for(let i=0;i<NP_C;i++){
+        const s = seedsC[i];
+        const cycle = (clock*0.35 + s.phase) % 1;
+        const captureX = channelStart + s.captureFrac*channelLen;
+        let x, y, z, scale;
+        if(cycle < 0.75){
+          const tt = cycle/0.75;
+          x = channelStart + tt*(captureX-channelStart);
+          y = tt*s.rail*0.85;
+          z = (1-tt)*s.jitter;
+          scale = 1;
+        } else {
+          const tt = (cycle-0.75)/0.25;
+          x = captureX;
+          y = s.rail*0.85 + tt*(s.rail*0.15);
+          z = 0;
+          scale = Math.max(1-tt, 0.001);
+        }
+        dummy.position.set(x, y, z);
+        dummy.scale.setScalar(scale);
+        dummy.updateMatrix();
+        particlesC.setMatrixAt(i, dummy.matrix);
+      }
+      particlesC.instanceMatrix.needsUpdate = true;
+ 
       b.controls.update();
       b.renderer.render(b.scene, b.camera);
       labelEls.forEach(function(le){ projectLabel(le.el, le.pos, b.camera, container); });
       markReady(container);
     }
-
+ 
     return { setState: function(){}, resize: b.fit, tick };
   }
-
+ 
   function init(){
     const helixEl = document.getElementById('gl-helix');
     const packingEl = document.getElementById('gl-packing');
     const engineEl = document.getElementById('gl-engine');
     if(!helixEl || !packingEl || !engineEl) return;
-
+ 
     const helix = createHelix(helixEl);
     const packing = createPacking(packingEl);
     const engine = createEngine(engineEl);
-
+ 
     window.PTFE3D = { helix: helix, packing: packing, engine: engine };
     window.dispatchEvent(new Event('ptfe3d-ready'));
-
+ 
     let last = performance.now();
     function loop(now){
       const dt = Math.min(0.05, (now-last)/1000);
@@ -492,7 +552,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     }
     requestAnimationFrame(loop);
   }
-
+ 
   if(document.readyState === 'loading'){
     document.addEventListener('DOMContentLoaded', init);
   } else {
