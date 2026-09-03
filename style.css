@@ -194,7 +194,7 @@
   }
   .canvas-grid.helix-grid{ grid-template-columns:1.7fr 1fr; }
   .canvas-grid.helix-grid3{ grid-template-columns:1.15fr 1fr 1fr; }
-  .canvas-grid.ion-grid{ grid-template-columns:1.5fr 1fr; }
+  .canvas-grid.ion-grid{ grid-template-columns:2fr 1fr; }
   @media (max-width:900px){ .canvas-grid.helix-grid3{ grid-template-columns:1fr 1fr; } }
   @media (max-width:720px){ .canvas-grid{ grid-template-columns:1fr; } .canvas-grid.helix-grid{ grid-template-columns:1fr; } .canvas-grid.helix-grid3{ grid-template-columns:1fr; } .canvas-grid.ion-grid{ grid-template-columns:1fr; } }
   .canvas-cell{
@@ -252,6 +252,13 @@
     background:rgba(5,7,14,0.62); padding:1px 5px; border-radius:2px;
     pointer-events:none; transform:translate(-50%,-50%);
     transition:opacity 0.15s linear;
+  }
+  .gl-leader{
+    stroke:var(--muted); stroke-width:1; stroke-dasharray:2 2;
+    opacity:0; transition:opacity 0.15s linear;
+  }
+  .gl-anchor{
+    fill:var(--ink); opacity:0; transition:opacity 0.15s linear;
   }
 
   /* ---------- Pipeline conceptual (Escena 4: vinculo tau0 -> empuje) ---------- */
